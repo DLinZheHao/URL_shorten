@@ -8,9 +8,10 @@ const urlSchema = new mongoose.Schema(
         },
         shorten: {
             type: String,
-            required: [true, '輸入資料沒有鎖短網址！']
+            required: [true, '輸入資料沒有短網址！']
         }
     }
 )
+
 const Url = mongoose.model('Url', urlSchema);
 module.exports = Url;
