@@ -1,0 +1,20 @@
+<div class="row justify-content-center">
+  <h2 class="col-6">Success! Please use this link:</h2>
+  <div class="w-100"></div>
+  <a href={{shortenURL}} id="shortenURL" class="col-6 fs-3 mb-3">{{shortenURL}}</a>
+  <div class="w-100"></div>
+  <button type="button" onclick="copyShortURL()" class="btn btn-primary col-1 mx-auto">Copy</button>
+</div>
+
+{{!-- 按下複製按鈕自動複製短網址 --}}
+<script>
+  async function copyShortURL() {
+    try {
+      const shortenURL = document.getElementById('shortenURL')
+      await navigator.clipboard.writeText(shortenURL.innerText)
+      alert("copied to clipboard.")
+    } catch {
+      err => console.log(err)
+    }
+  }
+</script>
