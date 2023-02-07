@@ -1,5 +1,6 @@
 const path = require('path');
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
 const mongoose = require('mongoose');
 const exhbs = require('express-handlebars');
