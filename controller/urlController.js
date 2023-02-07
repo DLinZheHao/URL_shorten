@@ -7,19 +7,37 @@ exports.start_page = (req, res) => {
 };
 
 exports.shorten_Url = async (req, res) => {
-  const inputURL = req.body.inputURL;
-  const web_URL = await Url.findOne({ original: inputURL }).lean();
-  console.log(web_URL);
-  if (!web_URL) {
-    const shortenLetters = random_Letter_Generator();
-    const shortenURL = `http://localhost:3000/${shortenLetters}`;
-    Url.create({
-      original: shortenURL,
-      shorten: shortenLetters,
-    });
-    res.render('result', { shortenURL });
-  } else {
-    const shortenURL = `http://localhost:3000/${record.shorten}`;
-    res.status(200).render('result', { shortenURL });
+  try {
+    const inputURL = req.body.inputURL;
+    const web_URL = await Url.findOne({ original: inputURL }).lean();
+    //console.log(web_URL);
+    if (!web_URL) {
+      const shortenLetters = await random_Letter_Generator();
+      const shortenURL = `http://localhost:3000/${shortenLetters}`;
+      Url.create({
+        original: inputURL,
+        shorten: shortenLetters,
+      });
+      res.render('result', { shortenURL });
+    } else {
+      const shortenURL = `http://localhost:3000/${web_URL.shorten}`;
+      res.status(200).render('result', { shortenURL });
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+exports.enter_url = async (req, res) => {
+  try {
+    const shortenLetters = req.params.shortenLetters;
+    const web_URL = await Url.findOne({ shorten: shortenLetters });
+    if (!web_URL) {
+      res.render('fail', {});
+    } else {
+      res.redirect(web_URL.original);
+    }
+  } catch (err) {
+    console.error(err);
   }
 };

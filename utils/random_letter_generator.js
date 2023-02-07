@@ -1,19 +1,20 @@
-let store_generating_record = [];
+const mongoose = require('mongoose');
+const Url = require('../models/urlModel');
 
-const random_Letter_Generator = () => {
+const random_Letter_Generator = async () => {
   const letters =
     'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
   let shortLetters = '';
 
-  // 先生成一組資料 如果生成過的shortLetters 存在於 store_generating_record 重新生成
-  do {
+  while (true) {
     for (let i = 0; i < 5; i++) {
       shortLetters += random_letter(letters);
     }
-  } while (store_generating_record.includes(shortLetters) === true);
+    const boolean = await Url.find({ shorten: shortLetters });
 
-  store_generating_record.push(shortLetters);
-
+    // 持續創建shortLetters 除非 沒有重複
+    if (boolean.length === 0) break;
+  }
   return shortLetters;
 };
 
