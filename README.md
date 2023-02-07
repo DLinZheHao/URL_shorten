@@ -30,12 +30,13 @@
 
 <br>
 
-<PASSWORD>的部分 請維持原樣 app.js中會自動帶入密碼
+PASSWORD 的部分(含<>) 請維持原樣 app.js中會自動帶入密碼
+shorten_URL 會指定使用資料庫 可自行更改
     
     NODE_ENV=development
     PORT=3000
-    DATABASE=mongodb+srv://<username>:<PASSWORD>....
-    DATABASE_PASSWORD=<your password>  // 你的MongoDB連結
+    DATABASE=mongodb+srv://userName:<PASSWORD>@...shorten_URL?retryWrites=true&w=majority
+    DATABASE_PASSWORD=<your password>  
 
 5.執行程式
     
