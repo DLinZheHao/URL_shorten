@@ -32,8 +32,6 @@ exports.enter_url = async (req, res) => {
   try {
     const shortenLetters = req.params.shortenLetters;
     const web_URL = await Url.findOne({ shorten: shortenLetters });
-
-    // 未知情況導致前往失敗
     if (!web_URL) {
       res.render('fail', {});
     } else {
