@@ -4,16 +4,17 @@ const Url = require('../models/urlModel');
 const random_Letter_Generator = async () => {
   const letters =
     'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
-  let shortLetters = '';
-
   while (true) {
+    // 重設生成的五個字母
+    let shortLetters = '';
     for (let i = 0; i < 5; i++) {
       shortLetters += random_letter(letters);
     }
-    const boolean = await Url.find({ shorten: shortLetters });
+    // target_data => 可能存在於資料庫中的重複shorten 目標data
+    const target_data = await Url.find({ shorten: shortLetters });
 
-    // 持續創建shortLetters 除非 沒有重複
-    if (boolean.length === 0) break;
+    // 持續創建shortLetters,除非沒有重複 => target_data的資料長度為零
+    if (target_data.length === 0) break;
   }
   return shortLetters;
 };
