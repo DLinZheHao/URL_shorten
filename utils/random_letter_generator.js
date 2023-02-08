@@ -18,9 +18,9 @@ const random_Letter_Generator = async () => {
   return shortLetters;
 };
 
-const random_letter = (arr) => {
-  const index = Math.floor(Math.random() * arr.length);
-  return arr[index];
+const random_letter = (str) => {
+  const index = Math.floor(Math.random() * str.length);
+  return str[index];
 };
 
 module.exports = random_Letter_Generator;
