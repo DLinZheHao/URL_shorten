@@ -7,5 +7,5 @@ router.route('/').get(UrlController.start_page);
 router.route('/shorten').post(UrlController.shorten_Url);
 
 // 導向原始網站
-router.route('/:shortenLetters').get(UrlController.enter_url);
+router.route('/:shortenLetters').get(UrlController.lead_to_original_URL);
 module.exports = router;

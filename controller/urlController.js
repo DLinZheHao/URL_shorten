@@ -14,7 +14,7 @@ exports.shorten_Url = async (req, res) => {
     if (!web_URL) {
       const shortenLetters = await random_Letter_Generator();
       const shortenURL = `http://localhost:3000/${shortenLetters}`;
-      Url.create({
+      await Url.create({
         original: inputURL,
         shorten: shortenLetters,
       });
@@ -28,7 +28,7 @@ exports.shorten_Url = async (req, res) => {
   }
 };
 
-exports.enter_url = async (req, res) => {
+exports.lead_to_original_URL = async (req, res) => {
   try {
     const shortenLetters = req.params.shortenLetters;
     const web_URL = await Url.findOne({ shorten: shortenLetters });
