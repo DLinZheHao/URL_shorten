@@ -1,167 +1,62 @@
 const mongoose = require('mongoose');
 const Url = require('../models/urlModel');
 
-const random_Letter_Generator = async () => {
-  const All_letters_arr = [
-    '0',
-    '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-    '9',
-    'a',
-    'b',
-    'c',
-    'd',
-    'e',
-    'f',
-    'g',
-    'h',
-    'i',
-    'j',
-    'k',
-    'l',
-    'm',
-    'n',
-    'o',
-    'p',
-    'q',
-    'r',
-    's',
-    't',
-    'u',
-    'v',
-    'w',
-    'x',
-    'y',
-    'z',
-    'A',
-    'B',
-    'C',
-    'D',
-    'E',
-    'F',
-    'G',
-    'H',
-    'I',
-    'J',
-    'K',
-    'L',
-    'M',
-    'N',
-    'O',
-    'P',
-    'Q',
-    'R',
-    'S',
-    'T',
-    'U',
-    'V',
-    'W',
-    'X',
-    'Y',
-    'Z',
-  ];
+module.exports = function RandomLetter() {
+  const alphabets =
+    '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
-  // 用於檢查資料組成是否合規
-  const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-  const letters = [
-    'a',
-    'b',
-    'c',
-    'd',
-    'e',
-    'f',
-    'g',
-    'h',
-    'i',
-    'j',
-    'k',
-    'l',
-    'm',
-    'n',
-    'o',
-    'p',
-    'q',
-    'r',
-    's',
-    't',
-    'u',
-    'v',
-    'w',
-    'x',
-    'y',
-    'z',
-    'A',
-    'B',
-    'C',
-    'D',
-    'E',
-    'F',
-    'G',
-    'H',
-    'I',
-    'J',
-    'K',
-    'L',
-    'M',
-    'N',
-    'O',
-    'P',
-    'Q',
-    'R',
-    'S',
-    'T',
-    'U',
-    'V',
-    'W',
-    'X',
-    'Y',
-    'Z',
-  ];
-  let number_contain = 0;
-  let letter_contain = 0;
-  let shortLetters = '';
+  const getRandomChar = (string) => {
+    const index = Math.floor(Math.random() * string.length);
+    return string.charAt(index);
+  };
 
-  while (true) {
-    // reset
-    shortLetters = '';
-    number_contain = 0;
-    letter_contain = 0;
-
-    for (let i = 0; i < 5; i++) {
-      shortLetters += random_letter(All_letters_arr);
-
-      numbers.forEach((el) => {
-        if (shortLetters.includes(el)) {
-          number_contain++;
-        }
-        return;
-      });
-      letters.forEach((el) => {
-        if (shortLetters.includes(el)) {
-          letter_contain++;
-        }
-      });
+  const setLetter = (string, limit) => {
+    if (!limit) limit = 5;
+    let result = '';
+    for (let i = 0; i < limit; ++i) {
+      result += getRandomChar(string);
     }
-    // target_data => 可能存在於資料庫中的重複shorten 目標data
-    const target_data = await Url.find({ shorten: shortLetters });
+    return result;
+  };
 
-    if (number_contain > 0 && letter_contain > 0 && target_data.length === 0) {
-      //console.log(shortLetters);
-      break;
+  const check_compliance = (string) => {
+    const numbers = '0123456789';
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    let number_contain = 0;
+    let letter_contain = 0;
+
+    for (let i = 0; i < string.length; i++) {
+      // 檢查字母及數字
+      if (numbers.indexOf(string[i])) number_contain++;
+      else if (letters.indexOf(string)) letter_contain++;
+
+      if (number_contain > 0 && letter_contain > 0) break;
     }
-  }
-  return shortLetters;
-};
+    // 檢查成功
+    if (number_contain > 0 && letter_contain > 0) {
+      return true;
+    }
+    // 檢查失敗
+    return false;
+  };
 
-const random_letter = (arr) => {
-  const index = Math.floor(Math.random() * arr.length);
-  return arr[index];
-};
+  return {
+    generate: async function () {
+      let i = 0;
+      // 避免無窮迴圈，產生短網址應該到retry某個次數就要停止
+      while (i <= 20) {
+        const shortLetter = setLetter(alphabets);
 
-module.exports = random_Letter_Generator;
+        // 更換你的return logic
+        const target_data = await Url.find({ shorten: shortLetter });
+        const check = check_compliance(shortLetter);
+
+        if (check && target_data.length === 0) {
+          return shortLetter;
+        }
+        ++i;
+      }
+      return null;
+    },
+  };
+};
