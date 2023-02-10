@@ -55,6 +55,7 @@ shorten_URL 會指定使用資料庫 可自行更改
         "express-handlebars": "^3.0.0",
         "mongoose": "^6.9.1"
         "dotenv": "^16.0.3"
+        "url-validation": "^2.1.0"
 
     // 前端
         bootstrap@5.3.0
